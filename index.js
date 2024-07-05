@@ -10,7 +10,13 @@ try {
     )
     .catch((error) => {
       console.log("MongoDB connection Failed!", error);
-    });
+    })
+    .catch(
+      app.on("error", (error) => {
+        console.log("error : ", error);
+        throw error;
+      })
+    );
 } catch (error) {
-  console.log("Error from Express side!" , error);
+  console.log("Error from Express side!", error);
 }

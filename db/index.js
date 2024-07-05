@@ -12,6 +12,7 @@ const dbConnection = async () => {
     console.log(`Connected to db!! ${connectionInstance.connection.port}`);
   } catch (error) {
     console.log("Error occured while connecting to mongoDB", error);
+    throw error;
   }
 };
 
