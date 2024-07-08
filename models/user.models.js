@@ -53,7 +53,7 @@ const userSchema = new Schema(
 
 // pre hook
 userSchema.pre("save", async function (next) {
-  if (!this.password.isModified("password")) return next();
+  if (!this.isModified("password")) return next();
   // I added await
   this.password = await bcrypt.hash(this.password, 10);
 
@@ -64,8 +64,9 @@ userSchema.methods.isPasswordCorrect = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
 
-userSchema.methods.generateAccessToken = async function () {
-  return await jsonwebtoken.sign(
+// never use async await while generating access token and refresh token
+userSchema.methods.generateAccessToken = function () {
+  return jsonwebtoken.sign(
     {
       _id: this._id,
       userName: this.userName,
@@ -76,8 +77,8 @@ userSchema.methods.generateAccessToken = async function () {
     }
   );
 };
-userSchema.methods.generateRefreshToken = async function () {
-  return await jsonwebtoken.sign(
+userSchema.methods.generateRefreshToken = function () {
+  return jsonwebtoken.sign(
     {
       _id: this._id,
     },
